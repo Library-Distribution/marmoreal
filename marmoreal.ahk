@@ -30,8 +30,12 @@ else if (command = CMD_SET_DEFAULT_REMOTE || command = CMD_SHORT_SET_DEFAULT_REM
 {
 	Remote_SetDefault(Args[2])
 }
-if (command = CMD_VERSION || command = CMD_SHORT_VERSION)
+else if (command = CMD_VERSION || command = CMD_SHORT_VERSION)
 {
 	Console_Output(VERSION)
+}
+else if (command = CMD_CONFIG || command = CMD_SHORT_CONFIG)
+{
+	Config_Write(Args[2], Args[3], Args[4])
 }
 Exit(ERROR_SUCCESS)
