@@ -5,7 +5,7 @@ Console_Output(text)
 	{
 		out := FileOpen(DllCall("GetStdHandle", "UInt", -11, "Ptr"), "h")
 	}
-	out.WriteLine(text "`r`n")
+	out.WriteLine(text)
 	out.Read(0)
 }
 Console_Error(text)
