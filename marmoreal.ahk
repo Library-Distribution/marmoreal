@@ -35,9 +35,7 @@ else if (command = CMD_LIST_REMOTE || command = CMD_SHORT_LIST_REMOTE)
 	remotes := Remote_List()
 	Console_Output("listing " remotes.maxIndex() " remotes:")
 	for index, remote in remotes
-	{
-		Console_Output(index ": " remote)
-	}
+		Console_Output((Remote_IsDefault(remote) ? "* " : "  ") index ": " remote)
 	Console_Output("")
 }
 
