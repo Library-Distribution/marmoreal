@@ -19,8 +19,13 @@ Config_Delete(section, key)
 }
 Config_KeyExists(section, key)
 {
-	IniRead dummy, %A_ScriptDir%\marmoreal-config.ini, %section%, %key%, ~~~
-	return !(dummy == "~~~")
+	IniRead alldata, %A_ScriptDir%\marmoreal-config.ini, %section%
+	return RegExMatch(alldata, "(^|\n)\s*\Q" key "\E\s*=.*") > 0
+}
+Config_SectionExists(section)
+{
+	IniRead sections, %A_ScriptDir%\marmoreal-config.ini
+	return RegExMatch(sections, "(^|\n)\Q" section "\E(\n|$)") > 0
 }
 Config_InitFile()
 {
