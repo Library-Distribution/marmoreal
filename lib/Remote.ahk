@@ -1,52 +1,40 @@
 Remote_Add(name, url)
 {
-	if (!Remote_ValidateName(name))
-		throw Exception("Invalid parameter: 'name' must consist of letters, digits and underscores.", -1, ERROR_INVALID_PARAMETER)
-	if (!Remote_ValidateURL(url))
-		throw Exception("Invalid parameter: 'url' must be a valid URL.", -1, ERROR_INVALID_PARAMETER)
-	IniWrite %url%, %A_ScriptDir%\marmoreal-config.ini, Remotes, %name%
-	if (ErrorLevel)
-		throw Exception("No write access: could not write to config file.", -1, ERROR_NO_CONFIG_WRITE_ACCESS)
+	Remote_ValidateName(name, true)
+	, Remote_ValidateURL(url)
+	, Config_Write("remotes", name, url)
 }
 Remote_Delete(name)
 {
-	if (!Remote_ValidateName(name))
-		throw Exception("Invalid parameter: 'name' must consist of letters, digits and underscores.", -1, ERROR_INVALID_PARAMETER)
-	IniDelete %A_ScriptDir%\marmoreal-config.ini, Remotes, %name%
-	if (ErrorLevel)
-		throw Exception("No write access: could not write to config file.", -1, ERROR_NO_CONFIG_WRITE_ACCESS)
+	Remote_ValidateName(name, true)
+	, Config_Delete("remotes", name)
 }
 Remote_SetDefault(name)
 {
-	if (!Remote_ValidateName(name))
-		throw Exception("Invalid parameter: 'name' must consist of letters, digits and underscores.", -1, ERROR_INVALID_PARAMETER)
-	IniWrite %name%, %A_ScriptDir%\marmoreal-config.ini, Defaults, remote
-	if (ErrorLevel)
-		throw Exception("No write access: could not write to config file.", -1, ERROR_NO_CONFIG_WRITE_ACCESS)
+	Remote_ValidateName(name, true)
+	, Config_Write("defaults", "remote", name)
 }
 Remote_GetDefault()
 {
-	if (!Remote_ValidateName(name))
-		throw Exception("Invalid parameter: 'name' must consist of letters, digits and underscores.", -1, ERROR_INVALID_PARAMETER)
-	IniRead name, %A_ScriptDir%\marmoreal-config.ini, Defaults, remote, %A_Space%
-	if (ErrorLevel)
-		throw Exception("No read access: could not read from config file.", -1, ERROR_NO_CONFIG_READ_ACCESS)
-	return name
+	return Config_Read("defaults", "remote")
 }
 Remote_GetURL(name)
 {
-	if (!Remote_ValidateName(name))
-		throw Exception("Invalid parameter: 'name' must consist of letters, digits and underscores.", -1, ERROR_INVALID_PARAMETER)
-	IniRead url, %A_ScriptDir%\marmoreal-config.ini, Remotes, %name%
-	return url
+	Remote_ValidateName(name, true)
+	return Config_Read("remotes", name)
 }
 
-Remote_ValidateName(name)
+Remote_ValidateName(name, throwOnError = false)
 {
-	return RegExMatch(name, "^\w+$")
+	result := RegExMatch(name, "^\w+$")
+	if (!result && throwOnError)
+		throw Exception("Invalid parameter: 'name' must consist of letters, digits and underscores.", -1, ERROR_INVALID_PARAMETER)
+	return result
 }
-Remote_ValidateURL(url)
+Remote_ValidateURL(url, throwOnError = false)
 {
 	; TODO
+	if (invalid && throwOnError)
+		throw Exception("Invalid parameter: 'url' must be a valid URL.", -1, ERROR_INVALID_PARAMETER)
 	return true
 }
