@@ -12,7 +12,13 @@ Remote_Delete(name)
 Remote_SetDefault(name)
 {
 	Remote_ValidateName(name, true)
-	, Config_Write("defaults", "remote", name)
+	if (!Remote_Exists(name))
+		throw Exception("Invalid parameter: 'name' must be a valid and existing remote name.", -1, ERROR_INVALID_PARAMETER)
+	Config_Write("defaults", "remote", name)
+}
+Remote_Exists(name)
+{
+	return Config_KeyExists("remotes", name)
 }
 Remote_GetDefault()
 {

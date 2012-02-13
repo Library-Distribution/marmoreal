@@ -17,6 +17,11 @@ Config_Delete(section, key)
 	if (ErrorLevel)
 		throw Exception("No write access: could not write to config file.", -1, ERROR_NO_CONFIG_WRITE_ACCESS)
 }
+Config_KeyExists(section, key)
+{
+	IniRead dummy, %A_ScriptDir%\marmoreal-config.ini, %section%, %key%, ~~~
+	return !(dummy == "~~~")
+}
 Config_InitFile()
 {
 	; TODO: create default file if not present
