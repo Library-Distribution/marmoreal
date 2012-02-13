@@ -20,10 +20,18 @@
 			</xsd:sequence>
 			<xsd:anyAttribute processContents="skip"/> <!-- for extensibility -->
 		</xsd:complexType>
-		<xsd:key>
-			<xsd:selector xpath="categories//(library|framework|category)"/>
-			<xsd:field field="@id"/>
+		<xsd:key name="uniqueItemID">
+			<xsd:selector xpath="marmoreal-database/categories"/>
+			<xsd:field xpath=".//library/@id"/>
+			<xsd:field xpath=".//category/@id"/>
+			<xsd:field xpath=".//framework/@id"/>
 		</xsd:key>
+		<xsd:keyref name="library-reference" refer="uniqueItemID">
+			<xsd:selector xpath="marmoreal-database/categories"/>
+			<xsd:field xpath=".//library/@ref"/>
+			<xsd:field xpath=".//category/@ref"/>
+			<xsd:field xpath=".//framework/@ref"/>
+		</xsd:keyref>
 	</xsd:element>
 
 	<!-- defines a type for a GUID -->
@@ -94,10 +102,6 @@
 						<xsd:element name="libref" minOccurs="0" maxOccurs="unbounded">
 							<xsd:complexType>
 								<!--xsd:attribute name="ref" use="required"/--> <!-- keyref -->
-								<xsd:keyref name="library-reference">
-									<xsd:selector xpath="//library"/>
-									<xsd:field field="@ref"/>
-								</xsd:keyref>
 								<xsd:anyAttribute processContents="skip"/> <!-- for extensibility -->
 							</xsd:complexType>
 						</xsd:element>
