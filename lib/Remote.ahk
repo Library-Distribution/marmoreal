@@ -37,6 +37,10 @@ Remote_ValidateName(name, throwOnError = false)
 		throw Exception("Invalid parameter: 'name' must consist of letters, digits and underscores.", -1, ERROR_INVALID_PARAMETER)
 	return result
 }
+Remote_List()
+{
+	return Config_ListKeys("remotes")
+}
 Remote_ValidateURL(url, throwOnError = false)
 {
 	; TODO

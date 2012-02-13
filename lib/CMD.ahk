@@ -1,6 +1,7 @@
 global CMD_ADD_REMOTE := "add-remote", CMD_SHORT_ADD_REMOTE := "ar"
 global CMD_DELETE_REMOTE := "delete-remote", CMD_SHORT_DELETE_REMOTE := "dr"
 global CMD_SET_DEFAULT_REMOTE := "set-default-remote", CMD_SHORT_SET_DEFAULT_REMOTE := "sdr"
+global CMD_LIST_REMOTE := "list-remotes", CMD_SHORT_LIST_REMOTE := "lr"
 
 global CMD_INSTALL_LIB := "install", CMD_SHORT_INSTALL_LIB := "il"
 global CMD_REMOVE_LIB := "remove", CMD_SHORT_REMOVE_LIB := "rl"

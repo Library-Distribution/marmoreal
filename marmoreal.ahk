@@ -30,6 +30,17 @@ else if (command = CMD_SET_DEFAULT_REMOTE || command = CMD_SHORT_SET_DEFAULT_REM
 {
 	Remote_SetDefault(Args[2])
 }
+else if (command = CMD_LIST_REMOTE || command = CMD_SHORT_LIST_REMOTE)
+{
+	remotes := Remote_List()
+	Console_Output("listing " remotes.maxIndex() " remotes:")
+	for index, remote in remotes
+	{
+		Console_Output(index ": " remote)
+	}
+	Console_Output("")
+}
+
 else if (command = CMD_VERSION || command = CMD_SHORT_VERSION)
 {
 	Console_Output(VERSION)
