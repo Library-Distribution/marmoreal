@@ -27,16 +27,37 @@ Config_SectionExists(section)
 	IniRead sections, %A_ScriptDir%\marmoreal-config.ini
 	return RegExMatch(sections, "(^|\n)\Q" section "\E(\n|$)") > 0
 }
+Config_ListSections()
+{
+	IniRead raw, %A_ScriptDir%\marmoreal-config.ini
+	sections := []
+	StringSplit raw, raw, `n, `r
+	Loop %raw0%
+		sections[A_Index] := raw%A_Index%
+	return sections
+}
+Config_ListKeys(section)
+{
+	IniRead raw, %A_ScriptDir%\marmoreal-config.ini, %section%
+	keys := []
+	StringSplit raw, raw, `n, `r
+	Loop %raw0%
+	{
+		RegExMatch(raw%A_Index%, "mU)^\s*(?P<key>.*)\s*=", data)
+		keys[A_Index] := datakey
+	}
+	return keys
+}
 Config_InitFile()
 {
 	; TODO: create default file if not present
 }
-Config_ValidateSection(section)
+Config_ValidateSection(section, throwOnError = false)
 {
 	; TODO
 	return true
 }
-Config_ValidateKey(key)
+Config_ValidateKey(key, throwOnError = false)
 {
 	; TODO
 	return true
