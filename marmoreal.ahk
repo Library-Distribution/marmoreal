@@ -20,15 +20,15 @@ Console_Init()
 command := Args[1]
 if (command = CMD_ADD_REMOTE || command = CMD_SHORT_ADD_REMOTE)
 {
-	Remote_Add(Args[2], Args[3])
+	Remote_Add(Args_GetValueParam(Args, 1), Args_GetValueParam(Args, 2))
 }
 else if (command = CMD_DELETE_REMOTE || command = CMD_SHORT_DELETE_REMOTE)
 {
-	Remote_Delete(Args[2])
+	Remote_Delete(Args_GetValueParam(Args, 1))
 }
 else if (command = CMD_SET_DEFAULT_REMOTE || command = CMD_SHORT_SET_DEFAULT_REMOTE)
 {
-	Remote_SetDefault(Args[2])
+	Remote_SetDefault(Args_GetValueParam(Args, 1))
 }
 else if (command = CMD_LIST_REMOTE || command = CMD_SHORT_LIST_REMOTE)
 {
@@ -45,6 +45,6 @@ else if (command = CMD_VERSION || command = CMD_SHORT_VERSION)
 }
 else if (command = CMD_CONFIG || command = CMD_SHORT_CONFIG)
 {
-	Config_Write(Args[2], Args[3], Args[4])
+	Config_Write(Args_GetValueParam(Args, 1),Args_GetValueParam(Args, 2), Args_GetValueParam(Args, 3))
 }
 Exit(ERROR_SUCCESS)
