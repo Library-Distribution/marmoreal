@@ -1,4 +1,0 @@
-Exit(code)
-{
-	ExitApp code
-}
