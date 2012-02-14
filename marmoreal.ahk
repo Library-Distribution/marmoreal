@@ -17,6 +17,8 @@ global VERSION := "0.0.0.1 alpha 1"
 Args := Args_Parse()
 Console_Init()
 
+
+
 command := Args[1]
 if (command = CMD_ADD_REMOTE || command = CMD_SHORT_ADD_REMOTE)
 {
@@ -46,5 +48,9 @@ else if (command = CMD_VERSION || command = CMD_SHORT_VERSION)
 else if (command = CMD_CONFIG || command = CMD_SHORT_CONFIG)
 {
 	Config_Write(Args_GetValueParam(Args, 1),Args_GetValueParam(Args, 2), Args_GetValueParam(Args, 3))
+}
+else
+{
+	throw Exception("Invalid parameter: command was not recognized.", -1, ERROR_INVALID_PARAMETER)
 }
 Exit(ERROR_SUCCESS)

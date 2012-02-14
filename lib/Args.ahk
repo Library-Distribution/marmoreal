@@ -42,17 +42,14 @@ Args_GetValueParam(args, index)
 {
 	return args[Args_FindValueParam(args, index)]
 }
-
 Args_IsOption(arg)
 {
 	return SubStr(arg, 1, 2) == "--"
 }
-
 Args_IsQuietMode(args)
 {
 	return Args_HasOptions(args, OPT_QUIET_MODE, OPT_SHORT_QUIET_MODE)
 }
-
 Args_FindValue(args, value)
 {
 	for each, arg in args
