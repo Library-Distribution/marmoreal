@@ -1,10 +1,16 @@
 ﻿; <AutoHotkey L>
+; ======================================== script settings ========================================
 #SingleInstance off
 #NoEnv
 #KeyHistory 0
 ListLines Off
-global VERSION := "0.0.0.1 alpha 1"
+SetBatchLines -1
 
+; ======================================== global vars ========================================
+global VERSION := "0.0.0.1 alpha 1"
+global OptionsInEffect := { "QUIET" : "", "REMOTE" : "", "LIBDIR" : "", "DEP_TO" : "", "DEP_FROM" : "", "AHK" : "", "AHK_VERSION" : "", "ENCODING" : "" }
+
+; ======================================== libs ========================================
 #Include <Remote>
 #Include <Error>
 #Include <CMD>
@@ -12,21 +18,35 @@ global VERSION := "0.0.0.1 alpha 1"
 #Include <Args>
 #Include <Console>
 
+; ======================================== initialization ========================================
 Args := Args_Parse()
-Console_Init()
+, Config_InitFile()
+, Console_Init()
 
-; option defaults
-global OptionsInEffect := { "QUIET" : false, "REMOTE" : "", "LIBDIR" : "", "DEP_TO" : "", "DEP_FROM" : "", "AHK" : "", "AHK_VERSION" : "", "ENCODING" : "" }
-
-; read quiet mode setting
+; ======================================== read options ========================================
 OptionsInEffect["QUIET"] := Args_HasOptions(Args, OPT.QUIET, OPT.QUIET_SHORT)
 if (!OptionsInEffect["QUIET"])
-	val := Config_Read("defaults", "quiet_mode"), OptionsInEffect["QUIET"] := val == "true" || val == "1"
+	val := Config_Read("defaults", "quiet_mode"), OptionsInEffect["QUIET"] := val =	"true" || val == "1"
 
-OptionsInEffect["REMOTE"] := Args_HasOptions(Args, OPT.QUIET, OPT.QUIET_SHORT) ? Args_GetOptionValue(Args, OPT.QUIET, OPT.QUIET_SHORT) : Config_Read("defaults", "remote")
+OptionsInEffect["REMOTE"] := Args_HasOptions(Args, OPT.QUIET, OPT.QUIET_SHORT) ? Args_GetOptionValue(Args, OPT.QUIET, OPT.QUIET_SHORT) : Remote_GetDefault()
+, OptionsInEffect["LIBDIR"] := Args_HasOptions(Args, OPT.LIBDIR, OPT.LIBDIR_SHORT) ? Args_GetOptionValue(Args, OPT.QUIET, OPT.QUIET_SHORT) : Config_Read("defaults", "libdir")
+, OptionsInEffect["DEP_TO"] := Args_HasOptions(Args, OPT.DEPENDENCYLIBDIR, OPT.DEPENDENCYLIBDIR_SHORT) ? Args_GetOptionValue(Args, OPT.DEPENDENCYLIBDIR, OPT.DEPENDENCYLIBDIR_SHORT) : Config_Read("defaults", "installDependencies")
+, OptionsInEffect["DEP_FROM"] := Args_HasOptions(Args, OPT.DEPENDENCIES_FROM, OPT.DEPENDENCIES_FROM_SHORT) ? Args_GetOptionValue(Args, OPT.DEPENDENCIES_FROM, OPT.DEPENDENCIES_FROM_SHORT) : Config_Read("defaults", "readDependencies")
+, OptionsInEffect["AHK"] := Args_HasOptions(Args, OPT.AHKVERSION, OPT.AHKVERSION_SHORT) ? Args_GetOptionValue(Args, OPT.AHKVERSION, OPT.AHKVERSION_SHORT) : Config_Read("defaults", "AHKVersion")
+, OptionsInEffect["AHK_VERSION"] := Args_HasOptions(Args, OPT.AHK_REVISION, OPT.AHK_REVISION_SHORT) ? Args_GetOptionValue(Args, OPT.AHK_REVISION, OPT.AHK_REVISION_SHORT) : Config_Read("defaults", "AHKRevision")
+, OptionsInEffect["ENCODING"] := Args_HasOptions(Args, OPT.ENCODING, OPT.ENCODING_SHORT) ? Args_GetOptionValue(Args, OPT.ENCODING, OPT.ENCODING_SHORT) : Config_Read("defaults", "encoding")
+
+; ======================================== validate option values ========================================
+; quiet: doesn't need validation
+Remote_ValidateName(OptionsInEffect["REMOTE"], true)
+; todo: libdir
+; todo: dep_to
+; todo: dep_from
+; todo: ahk
+; todo: ahk-revision
+; todo: encoding
 
 command := Args[1], value_count := Args_CountValueParams(args)
-
 try
 {
 	; ======================================== remote management ========================================
@@ -61,11 +81,14 @@ try
 			Console_Output((Remote_IsDefault(remote) ? "* " : "  ") index ": " remote)
 	}
 
+	; ======================================== lib management ========================================
+	; todo...
+
 	; ======================================== app commands ========================================
 	else if (command = CMD_VERSION || command = CMD_SHORT_VERSION)
 	{
 		if (value_count > 0)
-			throw Exception("Invalid parameter count.", -1, ERROR_INVALID_PARAM_COUNT)
+			throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 
 		Console_Output(VERSION)
 	}
@@ -78,20 +101,23 @@ try
 		else
 			throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 	}
-	else ; no valid command was specified:
+
+	; ======================================== no valid command ========================================
+	else
 	{
 		throw Exception(ERROR_INVALID_PARAMETER, -1, "Invalid parameter: command was not recognized.")
 	}
 }
+; ======================================== error handling ========================================
 catch exception
 {
 	m := exception.message
-	if m is integer
+	if m is integer ; is assumed to be a marmoreal exception with an ERROR_XXX constant as message
 	{
 		Console_ErrorException(exception)
 		ExitApp m
 	}
-	else
+	else ; invalid or builtin exceptions
 	{
 		Console_ErrorException(Exception(ERROR_UNKNOWN_EXCEPTION, -1, "An unknown exception occured:`n" . Console_ExceptionToString(exception, 2)))
 		ExitApp ERROR_UNKNOWN_EXCEPTION
