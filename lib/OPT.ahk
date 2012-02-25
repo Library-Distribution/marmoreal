@@ -26,7 +26,7 @@ class OPT
 }
 class OPT_HANDLER
 {
-	; lists options whioch require a value to be passed after them
+	; lists options which require a value to be passed after them
 	static VALUE_OPTIONS := [ OPT.REMOTE, OPT.REMOTE_SHORT
 							, OPT.LIBDIR, OPT.LIBDIR_SHORT
 							, OPT.DEPENDENCYLIBDIR, OPT.DEPENDENCYLIBDIR_SHORT
