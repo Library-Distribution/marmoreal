@@ -13,6 +13,71 @@ Args_Parse()
 }
 
 /*
+Function: Args_Process
+processes the command line arguments
+
+Parameters:
+	byRef command - receives the passed command
+	byRef subcommand - receives the passed subcommand
+	byref options - receives an array of passed options. if it's a value option, it's an object
+	byRef values - receives an array of additional values passed
+*/
+Args_Process(byRef command, byRef subcommand, byRef options, byRef values)
+{
+	; --------------------------------------------------------------
+	; parsing arguments into an array
+	local args := []
+	Loop %0%
+	{
+		args[A_Index] := Trim(%A_Index%, " `t""'")
+	}
+	; everything in this method up to here is obsolete in AHK v2
+	; --------------------------------------------------------------
+
+	; initializing variables
+	options := [], values := []
+	local finished_option_parsing := false
+
+	; loop through arguments
+	for each, arg in args
+	{
+		if (A_Index == 1)
+		{
+			; TODO: check if it's a valid command
+			command := arg
+			continue
+		}
+		else if (A_Index == 2)
+		{
+			; TODO: check if it is valid as subcommand of the command
+			subcommand := arg
+			continue
+		}
+
+		if (arg == "--")
+		{
+			finished_option_parsing := true
+			continue
+		}
+		finished_option_parsing := finished_option_parsing || (!Args_IsOption(args, A_Index) && !Args_IsOptionValue(args, A_Index))
+
+		if (!finished_option_parsing) ; parsing options
+		{
+			if Args_IsOptionValue(args, A_Index)
+				continue ; skip, was already included with its option (see 2 lines below)
+			else if Args_IsValueOption(arg)
+				options.Insert( { (arg) : args[A_Index + 1] } ) ; include value option and its value in the array
+			else
+				options.Insert(arg) ; include simple option in the array
+		}
+		else ; parsing values
+		{
+			values.Insert(arg)
+		}
+	}
+}
+
+/*
 Function: Args_HasOption()
 checks if the command line includes the specified option
 
@@ -99,7 +164,13 @@ Returns:
 */
 Args_IsOption(args, index)
 {
-	return Args_FindValue(OPT, args[index]) > -1 && Args_FindValue(args, "--") < index
+	end := Args_FindValue(args, "--")
+	return Args_FindValue(OPT, args[index]) > -1 && (end > index || end == -1)
+}
+
+Args_IsValueOption(arg)
+{
+	return Args_FindValue(OPT_HANDLER.VALUE_OPTIONS, arg) != -1
 }
 
 /*
@@ -115,7 +186,7 @@ Returns:
 */
 Args_IsOptionValue(args, index)
 {
-	return Args_IsOption(args, index - 1) && Args_FindValue(OPT_HANDLER.ValueOptions, args[index - 1]) > -1
+	return Args_IsOption(args, index - 1) && Args_IsValueOption(args[index - 1])
 }
 
 /*
