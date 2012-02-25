@@ -13,7 +13,11 @@ global OptionsInEffect := { "QUIET" : "", "REMOTE" : "", "LIBDIR" : "", "DEP_TO"
 ; ======================================== libs ========================================
 #Include <Remote>
 #Include <Error>
+
 #Include <CMD>
+#Include <Subcommands>
+#Include <CommandHandler>
+
 #Include <OPT>
 #Include <Args>
 #Include <Console>
@@ -23,8 +27,6 @@ Config_InitFile(), Console_Init(), Args_Process(command, subcmd, options, values
 
 ; debugging:
 ;MsgBox % "command: " command "`nsubcommand: " subcmd "`noptions: " Obj_Print(options, 1) "`nvalues: " Obj_Print(values, 1)
-
-;return
 
 ; ======================================== read options =============================================
 /*OptionsInEffect["QUIET"] := Args_HasOptions(Args, OPT.QUIET, OPT.QUIET_SHORT)
