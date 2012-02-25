@@ -21,38 +21,54 @@ global CMD_CONFIG := "config", CMD_SHORT_CONFIG := "cg"
 */
 class CMD
 {
-	static CMD_REMOTE := "remote"
-	static CMD_REMOTE_ADD := "add"
-	static CMD_REMOTE_DELETE := "delete"
-	static CMD_REMOTE_DEFAULT := "set-default"
-	static CMD_REMOTE_URL := "set-url"
-	static CMD_REMOTE_LIST := "list"
+	static REMOTE := "remote"
+	static CACHE := "cache"
+	static CONFIG := "config"
+	static APP := "app"
+	static GUI := "gui"
+	static INSTALL := "install"
+}
 
-	static CMD_CACHE := "cache"
-	static CMD_CACHE_CLEAR := "clear"
-	static CMD_CACHE_ADD := "add"
-	static CMD_CACHE_REMOVE := "remove"
+class Subcommands
+{
+	static REMOTE_ADD := "add"
+	static REMOTE_DELETE := "delete"
+	static REMOTE_DEFAULT := "set-default"
+	static REMOTE_URL := "set-url"
+	static REMOTE_LIST := "list"
 
-	static CMD_CONFIG := "config"
-	static CMD_CONFIG_WRITE := "write"
-	static CMD_CONFIG_READ := "read"
-	static CMD_CONFIG_DELETE := "delete"
+	static CACHE_CLEAR := "clear"
+	static CACHE_ADD := "add"
+	static CACHE_REMOVE := "remove"
 
-	static CMD_APP := "app"
-	static CMD_APP_UPDATE := "update"
+	static CONFIG_WRITE := "write"
+	static CONFIG_READ := "read"
+	static CONFIG_DELETE := "delete"
 
-	static CMD_GUI := "gui"
+	static APP_UPDATE := "update"
 
-	static CMD_INSTALL := "install"
-	static CMD_REMOVE := "remove"
-	static CMD_UPDATE := "update"
+	static REMOVE := "remove"
+	static UPDATE := "update"
+}
 
-	static Mapping := { CMD.CMD_REMOTE		: [CMD.CMD_REMOTE_ADD, CMD.CMD_REMOTE_DELETE, CMD.CMD_REMOTE_DEFAULT, CMD.CMD_REMOTE_URL, CMD.CMD_REMOTE_LIST]
-						, CMD.CMD_CONFIG	: [CMD.CMD_CONFIG_DELETE, CMD.CMD_CONFIG_READ, CMD.CMD_CONFIG_WRITE]
-						, CMD.CMD_CACHE		: [CMD.CMD_CACHE_CLEAR, CMD.CMD_CACHE_ADD, CMD.CMD_CACHE_REMOVE]
-						, CMD.CMD_APP		: [CMD.CMD_APP_UPDATE]
-						, CMD.CMD_GUI		: ""
-						, CMD.CMD_INSTALL	: ""
-						, CMD.CMD_REMOVE	: ""
-						, CMD.CMD_UPDATE	: "" }
+class CommandHandler
+{
+	static Mapping := { CMD.REMOTE		: [Subcommands.REMOTE_ADD,		Subcommands.REMOTE_DELETE,	Subcommands.REMOTE_DEFAULT,	Subcommands.REMOTE_URL,	Subcommands.REMOTE_LIST]
+						, CMD.CONFIG	: [Subcommands.CONFIG_DELETE,	Subcommands.CONFIG_READ,	Subcommands.CONFIG_WRITE]
+						, CMD.CACHE		: [Subcommands.CACHE_CLEAR,		Subcommands.CACHE_ADD,		Subcommands.CACHE_REMOVE]
+						, CMD.APP		: [Subcommands.APP_UPDATE]
+						, CMD.GUI		: ""
+						, CMD.INSTALL	: ""
+						, CMD.REMOVE	: ""
+						, CMD.UPDATE	: "" }
+
+	IsValidCommand(str)
+	{
+		return Obj_FindValue(CMD, str) != ""
+	}
+
+	IsValidSubcommand(command, str)
+	{
+		return Obj_FindValue(CommandHandler.Mapping[command], str) != ""
+	}
 }
