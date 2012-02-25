@@ -1,18 +1,4 @@
 /*
-Function: Args_Parse()
-parses the command line parameters into an array and returns it
-*/
-Args_Parse()
-{
-	local args := []
-	Loop %0%
-	{
-		args[A_Index] := Trim(%A_Index%, " `t""'")
-	}
-	return args
-}
-
-/*
 Function: Args_Process
 processes the command line arguments
 
@@ -48,6 +34,7 @@ Args_Process(byRef command, byRef subcommand, byRef options, byRef values)
 		}
 		else if (A_Index == 2 && CommandHandler.IsValidSubcommand(command, arg))
 		{
+			; todo: default subcommand
 			subcommand := arg
 			continue
 		}
