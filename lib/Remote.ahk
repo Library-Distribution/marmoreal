@@ -29,6 +29,11 @@ Remote_GetURL(name)
 	Remote_ValidateName(name, true)
 	return Config_Read("remotes", name)
 }
+Remote_SetURL(name, url)
+{
+	Remote_ValidateName(name, true), Remote_ValidateURL(url)
+	, Config_Write("remotes", name, url)
+}
 Remote_IsDefault(name)
 {
 	return Remote_GetDefault() = name
