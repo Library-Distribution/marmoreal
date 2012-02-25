@@ -27,6 +27,8 @@ class CMD
 	static APP := "app"
 	static GUI := "gui"
 	static INSTALL := "install"
+	static REMOVE := "remove"
+	static UPDATE := "update"
 }
 
 class Subcommands
@@ -47,9 +49,6 @@ class Subcommands
 
 	static APP_UPDATE := "update"
 	static APP_VERSION := "version"
-
-	static REMOVE := "remove"
-	static UPDATE := "update"
 }
 
 class CommandHandler
