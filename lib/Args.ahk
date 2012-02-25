@@ -41,15 +41,13 @@ Args_Process(byRef command, byRef subcommand, byRef options, byRef values)
 	; loop through arguments
 	for each, arg in args
 	{
-		if (A_Index == 1)
+		if (A_Index == 1 && CommandHandler.IsValidCommand(arg))
 		{
-			; TODO: check if it's a valid command
 			command := arg
 			continue
 		}
-		else if (A_Index == 2)
+		else if (A_Index == 2 && CommandHandler.IsValidSubcommand(command, arg))
 		{
-			; TODO: check if it is valid as subcommand of the command
 			subcommand := arg
 			continue
 		}
