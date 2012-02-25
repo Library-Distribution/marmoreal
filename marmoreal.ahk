@@ -18,13 +18,16 @@ global OptionsInEffect := { "QUIET" : "", "REMOTE" : "", "LIBDIR" : "", "DEP_TO"
 #Include <Args>
 #Include <Console>
 
-; ======================================== initialization ========================================
-Args := Args_Parse()
-, Config_InitFile()
-, Console_Init()
+; ======================================== initialization ===========================================
+Config_InitFile(), Console_Init(), Args_Process(command, subcmd, options, values)
 
-; ======================================== read options ========================================
-OptionsInEffect["QUIET"] := Args_HasOptions(Args, OPT.QUIET, OPT.QUIET_SHORT)
+; debugging:
+;MsgBox % "command: " command "`nsubcommand: " subcmd "`noptions: " Obj_Print(options, 1) "`nvalues: " Obj_Print(values, 1)
+
+;return
+
+; ======================================== read options =============================================
+/*OptionsInEffect["QUIET"] := Args_HasOptions(Args, OPT.QUIET, OPT.QUIET_SHORT)
 if (!OptionsInEffect["QUIET"])
 	val := Config_Read("defaults", "quiet_mode"), OptionsInEffect["QUIET"] := val =	"true" || val == "1"
 
@@ -35,9 +38,9 @@ OptionsInEffect["REMOTE"] := Args_HasOptions(Args, OPT.QUIET, OPT.QUIET_SHORT) ?
 , OptionsInEffect["AHK"] := Args_HasOptions(Args, OPT.AHKVERSION, OPT.AHKVERSION_SHORT) ? Args_GetOptionValue(Args, OPT.AHKVERSION, OPT.AHKVERSION_SHORT) : Config_Read("defaults", "AHKVersion")
 , OptionsInEffect["AHK_VERSION"] := Args_HasOptions(Args, OPT.AHK_REVISION, OPT.AHK_REVISION_SHORT) ? Args_GetOptionValue(Args, OPT.AHK_REVISION, OPT.AHK_REVISION_SHORT) : Config_Read("defaults", "AHKRevision")
 , OptionsInEffect["ENCODING"] := Args_HasOptions(Args, OPT.ENCODING, OPT.ENCODING_SHORT) ? Args_GetOptionValue(Args, OPT.ENCODING, OPT.ENCODING_SHORT) : Config_Read("defaults", "encoding")
-
-; ======================================== validate option values ========================================
-; quiet: doesn't need validation
+*/
+; ======================================== validate option values ===================================
+/*; quiet: doesn't need validation
 Remote_ValidateName(OptionsInEffect["REMOTE"], true)
 ; todo: libdir
 ; todo: dep_to
@@ -45,70 +48,98 @@ Remote_ValidateName(OptionsInEffect["REMOTE"], true)
 ; todo: ahk
 ; todo: ahk-revision
 ; todo: encoding
+*/
 
-command := Args[1], value_count := Args_CountValueParams(args)
+value_count := values.maxIndex()
 try
 {
-	; ======================================== remote management ========================================
-	if (command = CMD_ADD_REMOTE || command = CMD_SHORT_ADD_REMOTE)
+	; ======================================== remote management ====================================
+	if (command = CMD.REMOTE)
 	{
-		if (value_count != 2)
-			throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-
-		Remote_Add(Args_GetValueParam(Args, 1), Args_GetValueParam(Args, 2))
+		if (subcmd = Subcommands.REMOTE_ADD)
+		{
+			if (value_count != 2)
+				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			Remote_Add(values[1], values[2])
+		}
+		else if (subcmd = Subcommands.REMOTE_DELETE)
+		{
+			if (value_count != 1)
+				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			Remote_Delete(values[1])
+		}
+		else if (subcmd = Subcommands.REMOTE_DEFAULT)
+		{
+			if (value_count != 1)
+				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			Remote_SetDefault(values[1])
+		}
+		else if (subcmd = Subcommands.REMOTE_LIST)
+		{
+			if (value_count > 0)
+				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			remotes := Remote_List(), Console_Output("listing " remotes.maxIndex() " remotes:")
+			for index, remote in remotes
+				Console_Output((Remote_IsDefault(remote) ? "* " : "  ") index ": " remote)
+		}
+		else if (subcmd = Subcommands.REMOTE_URL)
+		{
+			if (value_count != 2)
+				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			Remote_SetURL(values[1], values[2])
+		}
 	}
-	else if (command = CMD_DELETE_REMOTE || command = CMD_SHORT_DELETE_REMOTE)
-	{
-		if (value_count != 1)
-			throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-
-		Remote_Delete(Args_GetValueParam(Args, 1))
-	}
-	else if (command = CMD_SET_DEFAULT_REMOTE || command = CMD_SHORT_SET_DEFAULT_REMOTE)
-	{
-		if (value_count != 1)
-			throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-
-		Remote_SetDefault(Args_GetValueParam(Args, 1))
-	}
-	else if (command = CMD_LIST_REMOTE || command = CMD_SHORT_LIST_REMOTE)
-	{
-		if (value_count > 0)
-			throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-
-		remotes := Remote_List(), Console_Output("listing " remotes.maxIndex() " remotes:")
-		for index, remote in remotes
-			Console_Output((Remote_IsDefault(remote) ? "* " : "  ") index ": " remote)
-	}
-
-	; ======================================== lib management ========================================
+	; ======================================== cache management =====================================
 	; todo...
 
-	; ======================================== app commands ========================================
-	else if (command = CMD_VERSION || command = CMD_SHORT_VERSION)
-	{
-		if (value_count > 0)
-			throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+	; ======================================== lib management =======================================
+	; todo...
 
-		Console_Output(VERSION)
-	}
-	else if (command = CMD_CONFIG || command = CMD_SHORT_CONFIG)
+	; ======================================== app commands =========================================
+	else if (command = CMD.APP)
 	{
-		if (value_count == 3)
-			Config_Write(Args_GetValueParam(Args, 1), Args_GetValueParam(Args, 2), Args_GetValueParam(Args, 3))
-		else if (value_count == 2)
-			Console_Output("The current value is: """ . Config_Read(Args_GetValueParam(Args, 1), Args_GetValueParam(Args, 2)) . """.")
-		else
-			throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+		if (subcmd = Subcommands.APP_VERSION)
+		{
+			if (value_count > 0)
+				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			Console_Output(VERSION)
+		}
+		else if (subcmd = Subcommands.APP_UPDATE)
+		{
+			if (value_count > 0)
+				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			throw Exception(ERROR_NOT_IMPLEMENTED, -1, "Action not (yet) implemented.")
+		}
 	}
-
-	; ======================================== no valid command ========================================
-	else
+	; ======================================== config commands ======================================
+	else if (command = CMD.CONFIG)
+	{
+		if (subcmd = Subcommands.CONFIG_WRITE)
+		{
+			if (value_count != 3)
+				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			Config_Write(values[1], values[2], values[3])
+		}
+		else if (subcmd = Subcommands.CONFIG_READ)
+		{
+			if (value_count != 2)
+				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			Console_Output("The current value is:`n" . Config_Read(values[1], values[2]))
+		}
+		else if (subcmd = Subcommands.CONFIG_DELETE)
+		{
+			if (value_count != 2)
+				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			Config_Delete(values[1], values[2])
+		}
+	}
+	; ======================================== no valid command =====================================
+	else ; change this to use some "handled" boolean or similar
 	{
 		throw Exception(ERROR_INVALID_PARAMETER, -1, "Invalid parameter: command was not recognized.")
 	}
 }
-; ======================================== error handling ========================================
+; ======================================== error handling ===========================================
 catch exception
 {
 	m := exception.message
