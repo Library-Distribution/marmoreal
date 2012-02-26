@@ -52,7 +52,7 @@ Remote_ValidateName(OptionsInEffect["REMOTE"], true)
 ; todo: encoding
 */
 
-value_count := values.maxIndex()
+value_count := values.maxIndex(), handled := false
 try
 {
 	; ======================================== remote management ====================================
@@ -62,19 +62,19 @@ try
 		{
 			if (value_count != 2)
 				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-			Remote_Add(values[1], values[2])
+			Remote_Add(values[1], values[2]), handled := true
 		}
 		else if (subcmd = Subcommands.REMOTE_DELETE)
 		{
 			if (value_count != 1)
 				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-			Remote_Delete(values[1])
+			Remote_Delete(values[1]), handled := true
 		}
 		else if (subcmd = Subcommands.REMOTE_DEFAULT)
 		{
 			if (value_count != 1)
 				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-			Remote_SetDefault(values[1])
+			Remote_SetDefault(values[1]), handled := true
 		}
 		else if (subcmd = Subcommands.REMOTE_LIST)
 		{
@@ -83,12 +83,13 @@ try
 			remotes := Remote_List(), Console_Output("listing " remotes.maxIndex() " remotes:")
 			for index, remote in remotes
 				Console_Output((Remote_IsDefault(remote) ? "* " : "  ") index ": " remote)
+			handled := true
 		}
 		else if (subcmd = Subcommands.REMOTE_URL)
 		{
 			if (value_count != 2)
 				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-			Remote_SetURL(values[1], values[2])
+			Remote_SetURL(values[1], values[2]), handled := true
 		}
 	}
 	; ======================================== cache management =====================================
@@ -104,7 +105,7 @@ try
 		{
 			if (value_count > 0)
 				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-			Console_Output(VERSION)
+			Console_Output(VERSION), handled := true
 		}
 		else if (subcmd = Subcommands.APP_UPDATE)
 		{
@@ -120,25 +121,25 @@ try
 		{
 			if (value_count != 3)
 				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-			Config_Write(values[1], values[2], values[3])
+			Config_Write(values[1], values[2], values[3]), handled := true
 		}
 		else if (subcmd = Subcommands.CONFIG_READ)
 		{
 			if (value_count != 2)
 				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-			Console_Output("The current value is:`n" . Config_Read(values[1], values[2]))
+			Console_Output("The current value is:`n" . Config_Read(values[1], values[2])), handled := true
 		}
 		else if (subcmd = Subcommands.CONFIG_DELETE)
 		{
 			if (value_count != 2)
 				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-			Config_Delete(values[1], values[2])
+			Config_Delete(values[1], values[2]), handled := true
 		}
 	}
 	; ======================================== no valid command =====================================
-	else ; change this to use some "handled" boolean or similar
+	if (!handled)
 	{
-		throw Exception(ERROR.INVALID_PARAMETER, -1, "Invalid parameter: command was not recognized.")
+		throw Exception(ERROR.INVALID_PARAMETER, -1, "Invalid parameter: command or subcommand was not recognized.")
 	}
 }
 ; ======================================== error handling ===========================================
