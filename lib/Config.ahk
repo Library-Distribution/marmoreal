@@ -2,20 +2,20 @@ Config_Write(section, key, value)
 {
 	IniWrite %value%, %A_ScriptDir%\marmoreal-config.ini, %section%, %key%
 	if (ErrorLevel)
-		throw Exception(ERROR_NO_CONFIG_WRITE_ACCESS, -1, "No write access: could not write to config file.")
+		throw Exception(ERROR.NO_CONFIG_WRITE_ACCESS, -1, "No write access: could not write to config file.")
 }
 Config_Read(section, key)
 {
 	IniRead value, %A_ScriptDir%\marmoreal-config.ini, %section%, %key%, %A_Space%
 	if (ErrorLevel)
-		throw Exception(ERROR_NO_CONFIG_READ_ACCESS, -1, "No read access: could not read from config file.")
+		throw Exception(ERROR.NO_CONFIG_READ_ACCESS, -1, "No read access: could not read from config file.")
 	return value
 }
 Config_Delete(section, key)
 {
 	IniDelete %A_ScriptDir%\marmoreal-config.ini, %section%, %key%
 	if (ErrorLevel)
-		throw Exception(ERROR_NO_CONFIG_WRITE_ACCESS, -1, "No write access: could not write to config file.")
+		throw Exception(ERROR.NO_CONFIG_WRITE_ACCESS, -1, "No write access: could not write to config file.")
 }
 Config_KeyExists(section, key)
 {

@@ -13,7 +13,7 @@ Remote_SetDefault(name)
 {
 	Remote_ValidateName(name, true)
 	if (!Remote_Exists(name))
-		throw Exception(ERROR_INVALID_PARAMETER, -1, "Invalid parameter: the specified remote name must be a valid and existing remote name.")
+		throw Exception(ERROR.INVALID_PARAMETER, -1, "Invalid parameter: the specified remote name must be a valid and existing remote name.")
 	Config_Write("defaults", "remote", name)
 }
 Remote_Exists(name)
@@ -43,7 +43,7 @@ Remote_ValidateName(name, throwOnError = false)
 {
 	result := RegExMatch(name, "^\w+$")
 	if (!result && throwOnError)
-		throw Exception(ERROR_INVALID_PARAMETER, -1, "Invalid parameter: a remote name must consist of letters, digits and underscores.")
+		throw Exception(ERROR.INVALID_PARAMETER, -1, "Invalid parameter: a remote name must consist of letters, digits and underscores.")
 	return result
 }
 Remote_List()
@@ -54,6 +54,6 @@ Remote_ValidateURL(url, throwOnError = false)
 {
 	; TODO
 	if (invalid && throwOnError)
-		throw Exception(ERROR_INVALID_PARAMETER, -1, "Invalid parameter: a remote URL must be a valid URL.")
+		throw Exception(ERROR.INVALID_PARAMETER, -1, "Invalid parameter: a remote URL must be a valid URL.")
 	return true
 }

@@ -12,7 +12,7 @@ global OptionsInEffect := { "QUIET" : "", "REMOTE" : "", "LIBDIR" : "", "DEP_TO"
 
 ; ======================================== libs ========================================
 #Include <Remote>
-#Include <Error>
+#Include <ERROR>
 
 #Include <CMD>
 #Include <Subcommands>
@@ -61,25 +61,25 @@ try
 		if (subcmd = Subcommands.REMOTE_ADD)
 		{
 			if (value_count != 2)
-				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 			Remote_Add(values[1], values[2])
 		}
 		else if (subcmd = Subcommands.REMOTE_DELETE)
 		{
 			if (value_count != 1)
-				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 			Remote_Delete(values[1])
 		}
 		else if (subcmd = Subcommands.REMOTE_DEFAULT)
 		{
 			if (value_count != 1)
-				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 			Remote_SetDefault(values[1])
 		}
 		else if (subcmd = Subcommands.REMOTE_LIST)
 		{
 			if (value_count > 0)
-				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 			remotes := Remote_List(), Console_Output("listing " remotes.maxIndex() " remotes:")
 			for index, remote in remotes
 				Console_Output((Remote_IsDefault(remote) ? "* " : "  ") index ": " remote)
@@ -87,7 +87,7 @@ try
 		else if (subcmd = Subcommands.REMOTE_URL)
 		{
 			if (value_count != 2)
-				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 			Remote_SetURL(values[1], values[2])
 		}
 	}
@@ -103,14 +103,14 @@ try
 		if (subcmd = Subcommands.APP_VERSION)
 		{
 			if (value_count > 0)
-				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 			Console_Output(VERSION)
 		}
 		else if (subcmd = Subcommands.APP_UPDATE)
 		{
 			if (value_count > 0)
-				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
-			throw Exception(ERROR_NOT_IMPLEMENTED, -1, "Action not (yet) implemented.")
+				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+			throw Exception(ERROR.NOT_IMPLEMENTED, -1, "Action not (yet) implemented.")
 		}
 	}
 	; ======================================== config commands ======================================
@@ -119,26 +119,26 @@ try
 		if (subcmd = Subcommands.CONFIG_WRITE)
 		{
 			if (value_count != 3)
-				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 			Config_Write(values[1], values[2], values[3])
 		}
 		else if (subcmd = Subcommands.CONFIG_READ)
 		{
 			if (value_count != 2)
-				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 			Console_Output("The current value is:`n" . Config_Read(values[1], values[2]))
 		}
 		else if (subcmd = Subcommands.CONFIG_DELETE)
 		{
 			if (value_count != 2)
-				throw Exception(ERROR_INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+				throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
 			Config_Delete(values[1], values[2])
 		}
 	}
 	; ======================================== no valid command =====================================
 	else ; change this to use some "handled" boolean or similar
 	{
-		throw Exception(ERROR_INVALID_PARAMETER, -1, "Invalid parameter: command was not recognized.")
+		throw Exception(ERROR.INVALID_PARAMETER, -1, "Invalid parameter: command was not recognized.")
 	}
 }
 ; ======================================== error handling ===========================================
@@ -152,8 +152,8 @@ catch exception
 	}
 	else ; invalid or builtin exceptions
 	{
-		Console_ErrorException(Exception(ERROR_UNKNOWN_EXCEPTION, -1, "An unknown exception occured:`n" . Console_ExceptionToString(exception, 2)))
-		ExitApp ERROR_UNKNOWN_EXCEPTION
+		Console_ErrorException(Exception(ERROR.UNKNOWN_EXCEPTION, -1, "An unknown exception occured:`n" . Console_ExceptionToString(exception, 2)))
+		ExitApp ERROR.UNKNOWN_EXCEPTION
 	}
 }
-ExitApp ERROR_SUCCESS
+ExitApp ERROR.SUCCESS
