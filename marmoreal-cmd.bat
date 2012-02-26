@@ -12,11 +12,11 @@
 :: create "macro"
 doskey marmoreal="%AHK_PATH%" "%MARMOREAL%" $*
 
-:: ================================== debug section ==================================
-"%AHK_PATH%" "%MARMOREAL%" ar test_remote "https://raw.github.com/maul-esel/marmoreal/master/resources/test.dbm"
-"%AHK_PATH%" "%MARMOREAL%"  sdr test_remote
+:: ================================== debug section ===================================
+"%AHK_PATH%" "%MARMOREAL%" remote add test_remote "https://raw.github.com/maul-esel/marmoreal/master/resources/test.dbm"
+"%AHK_PATH%" "%MARMOREAL%" remote set-default test_remote
 doskey mrm="%AHK_PATH%" "%MARMOREAL%" $*
-:: ================================== End of section =================================
+:: ================================== End of section ==================================
 
 :: run a new cmd prompt which inherits the macro
 %COMSPEC% /k "echo This is the marmoreal command line v%VERSION%."
