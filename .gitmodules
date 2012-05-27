@@ -1,3 +1,6 @@
 [submodule "ALD"]
 	path = ALD
 	url = git://github.com/maul-esel/ALD.ahk.git
+[submodule "DBA"]
+	path = DBA
+	url = git://github.com/IsNull/ahkDBA.git
