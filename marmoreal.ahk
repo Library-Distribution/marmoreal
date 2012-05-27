@@ -22,6 +22,12 @@ global OptionsInEffect := { "QUIET" : "", "REMOTE" : "", "LIBDIR" : "", "DEP_TO"
 #Include <Args>
 #Include <Console>
 
+#include %A_ScriptDir%\ALD
+#include ALD.ahk
+
+#include %A_ScriptDir%\DBA
+#include DBA.ahk
+
 ; ======================================== initialization ===========================================
 Config_InitFile(), Console_Init(), Args_Process(command, subcmd, options, values)
 
