@@ -1,0 +1,3 @@
+[submodule "ALD"]
+	path = ALD
+	url = git://github.com/maul-esel/ALD.ahk.git
