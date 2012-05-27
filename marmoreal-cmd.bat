@@ -13,8 +13,8 @@
 doskey marmoreal="%AHK_PATH%" "%MARMOREAL%" $*
 
 :: ================================== debug section ===================================
-"%AHK_PATH%" "%MARMOREAL%" remote add test_remote "https://raw.github.com/maul-esel/marmoreal/master/resources/test.dbm"
-"%AHK_PATH%" "%MARMOREAL%" remote set-default test_remote
+"%AHK_PATH%" "%MARMOREAL%" remote add ald "http://maulesel.ahk4.net/api"
+"%AHK_PATH%" "%MARMOREAL%" remote set-default ald
 doskey mrm="%AHK_PATH%" "%MARMOREAL%" $*
 :: ================================== End of section ==================================
 
