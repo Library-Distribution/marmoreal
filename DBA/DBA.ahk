@@ -2,26 +2,26 @@
 	DataBase NameSpace Import
 */
 
-#Include <Base>
-#Include <Collection>
+#Include Base.ahk
+#Include Collection.ahk
 
 ;drivers
-#Include <SQLite_L>
-#Include <mySQL>
-#Include <ADO>
+#Include SQLite_L.ahk
+#Include mySQL.ahk
+#Include ADO.ahk
 
 class DBA ; namespace DBA
 {
-	#Include <DataBaseFactory>
-	#Include <DataBaseAbstract>
+	#Include DataBaseFactory.ahk
+	#Include DataBaseAbstract.ahk
 	
 
 	; Concrete SQL Providers
-	#Include <DataBaseSQLLite>
-	#Include <DataBaseMySQL>
-	#Include <DataBaseADO>
+	#Include DataBaseSQLLite.ahk
+	#Include DataBaseMySQL.ahk
+	#Include DataBaseADO.ahk
 	
-	#Include <RecordSetSqlLite>
-	#Include <RecordSetADO>
-	#Include <RecordSetMySQL>
+	#Include RecordSetSqlLite.ahk
+	#Include RecordSetADO.ahk
+	#Include RecordSetMySQL.ahk
 }
