@@ -21,6 +21,7 @@ global OptionsInEffect := { "QUIET" : "", "REMOTE" : "", "LIBDIR" : "", "DEP_TO"
 #Include <OPT>
 #Include <Args>
 #Include <Console>
+#include <Cache>
 
 #include %A_ScriptDir%\ALD
 #include ALD.ahk
@@ -57,6 +58,11 @@ Remote_ValidateName(OptionsInEffect["REMOTE"], true)
 ; todo: ahk-revision
 ; todo: encoding
 */
+
+SQLITE_DllPath(A_ScriptDir . "\DBA\" . (A_PtrSize == 8 ? "x64\" : "") . "sqlite3.dll")
+
+def_cache := Cache.GetCache(Remote_GetDefault())
+def_cache.Add({ "id" : "1234567890abcdef" }, A_ScriptFullPath)
 
 value_count := values.maxIndex(), handled := false
 try
