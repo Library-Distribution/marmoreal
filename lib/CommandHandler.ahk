@@ -6,8 +6,7 @@ class CommandHandler
 						, CMD.APP		: [Subcommands.APP_UPDATE,		Subcommands.APP_VERSION]
 						, CMD.GUI		: ""
 						, CMD.INSTALL	: ""
-						, CMD.REMOVE	: ""
-						, CMD.UPDATE	: "" }
+						, CMD.REMOVE	: "" }
 
 	IsValidCommand(str)
 	{

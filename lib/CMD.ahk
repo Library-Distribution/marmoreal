@@ -7,5 +7,4 @@ class CMD
 	static GUI := "gui"
 	static INSTALL := "install"
 	static REMOVE := "remove"
-	static UPDATE := "update"
 }
