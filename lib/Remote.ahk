@@ -43,7 +43,7 @@ Remote_ValidateName(name, throwOnError = false)
 {
 	result := RegExMatch(name, "^\w+$")
 	if (!result && throwOnError)
-		throw Exception(ERROR.INVALID_PARAMETER, -1, "Invalid parameter: a remote name must consist of letters, digits and underscores.")
+		throw Exception(ERROR.INVALID_PARAMETER, -2, "Invalid parameter: a remote name must consist of letters, digits and underscores.")
 	return result
 }
 Remote_List()
