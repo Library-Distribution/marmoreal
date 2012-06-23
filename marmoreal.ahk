@@ -63,8 +63,8 @@ Remote_ValidateName(OptionsInEffect["REMOTE"], true)
 
 SQLITE_DllPath(A_ScriptDir . "\DBA\" . (A_PtrSize == 8 ? "x64\" : "") . "sqlite3.dll")
 
-def_cache := Cache.GetCache(Remote_GetDefault())
-def_cache.Add({ "id" : "1234567890abcdef" }, A_ScriptFullPath)
+def_cache := Cache.GetCache(Remote_GetDefault()) ; debug code!
+def_cache.Add({ "id" : "1234567890abcdef" }, A_ScriptFullPath) ; debug code!
 
 value_count := values.maxIndex(), handled := false
 try
@@ -109,7 +109,103 @@ try
 	; ======================================== cache management =====================================
 	; todo...
 	; ======================================== lib management =======================================
-	; todo...
+	else if (command = CMD.INSTALL)
+	{
+		if (value_count != 1 && value_count != 2)
+		{
+			throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+		}
+
+		name := values[1]
+		if (value_count == 2) ; version specified
+		{
+			version := values[2]
+			, data := Cache.GetCache(OptionsInEffect["REMOTE"]).GetData(name, version)
+
+			if (!data)
+			{
+				if (!Ping(Remote_GetURL(OptionsInEffect["REMOTE"]))) ; ensure connection to remote
+				{
+					throw Exception(ERROR.NO_REMOTE_CONNECTION, -1, "Ping to remote '" . OptionsInEffect["REMOTE"] . "' failed.")
+				}
+				conn := new ALD.Connection(Remote_GetURL(OptionsInEffect["REMOTE"]))
+
+				try
+				{
+					data := conn.getItem(name, version)
+				}
+				catch e
+				{
+					throw Exception(ERROR.HTTP_ERROR, -1, "The remote issued an HTTP error:`n" Console_ExceptionToString(e, 2))
+				}
+				; todo: download package
+			}
+			else
+			{
+				; todo: copy package
+			}
+
+			; todo: check if ANOTHER VERSION is already installed
+			; if so, ASK THE USER - uninstall (just execute itself!) OR keep
+
+			; todo: install new package + run triggers
+		}
+		else if (value_count == 1) ; get latest version - requires internet connection
+		{
+			if (!Ping(Remote_GetURL(OptionsInEffect["REMOTE"]))) ; ensure connection to remote
+			{
+				; todo: check if cached versions exist
+				; todo: tell the user
+				throw Exception(ERROR.NO_REMOTE_CONNECTION, -1, "Ping to remote '" . OptionsInEffect["REMOTE"] . "' failed.") ; abort
+			}
+			conn := new ALD.Connection(Remote_GetURL(OptionsInEffect["REMOTE"]))
+
+			if (!RegExMatch(name, "^[a-zA-Z0-9]{32}$")) ; given argument is NOT an ID
+			{
+				; get id of latest version
+				try
+				{
+					data := conn.getItemList(0, 1, "", "", name, true) ; get latest version of %name%
+				}
+				catch e
+				{
+					throw Exception(ERROR.HTTP_ERROR, -1, "The remote issued an HTTP error:`n" Console_ExceptionToString(e, 2))
+				}
+				id := data[1]["id"] ; get the ID of the latest version
+			}
+			else ; given argument is an ID
+			{
+				id := name
+			}
+
+			try
+			{
+				data := conn.getItemById(id)
+			}
+			catch e
+			{
+				throw Exception(ERROR.HTTP_ERROR, -1, "The remote issued an HTTP error:`n" Console_ExceptionToString(e, 2))
+			}
+			; todo: download package
+
+			; todo: check if ANOTHER VERSION is already installed
+			; if so, ASK THE USER - uninstall (just execute itself!) OR keep
+
+			; todo: install new package + run triggers
+		}
+	}
+	else if (command = CMD.REMOVE)
+	{
+		if (value_count != 1) ; todo: allow 2 parameters to specify a specific version to remove or ALL
+		{
+			throw Exception(ERROR.INVALID_PARAM_COUNT, -1, "Invalid parameter count.")
+		}
+
+		name := values[1]
+		; todo: check if installed
+		; run any triggers present
+		; remove files
+	}
 	; ======================================== app commands =========================================
 	else if (command = CMD.APP)
 	{
