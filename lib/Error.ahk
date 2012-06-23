@@ -6,5 +6,7 @@ class ERROR
 	static NO_CONFIG_WRITE_ACCESS := 0x02
 	static NO_CONFIG_READ_ACCESS := 0x03
 	static INVALID_PARAM_COUNT := 0x04
-	static NOT_IMPLEMENTED := 0x05
+	static NO_REMOTE_CONNECTION := 0x05
+	static HTTP_ERROR := 0x06
+	static NOT_IMPLEMENTED := 0x07
 }
