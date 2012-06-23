@@ -23,6 +23,8 @@ global OptionsInEffect := { "QUIET" : "", "REMOTE" : "", "LIBDIR" : "", "DEP_TO"
 #Include <Console>
 #include <Cache>
 
+#include <Ping>
+
 #include %A_ScriptDir%\ALD
 #include ALD.ahk
 
